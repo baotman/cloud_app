@@ -40,4 +40,29 @@ public class Util {
 
     }
 
+    public static String getUpdateFromReqest(HttpServletRequest request) {
+        String params = "";
+
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            if (paramName.equals("tableName" ) || paramName.equals("rowId") || paramName.equals("id")) {
+                continue;
+            }
+            String[] paramValues = request.getParameterValues(paramName);
+            params += paramName + "=";
+            params += "'" + paramValues[0] + "' ";
+//            for (int i = 0; i < paramValues.length; i++) {
+//                String paramValue = paramValues[i];
+//                pra
+//            }
+            if (parameterNames.hasMoreElements()) {
+                params += ", ";
+            }
+
+        }
+
+        return params;
+    }
+
 }

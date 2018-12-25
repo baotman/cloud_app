@@ -39,11 +39,16 @@ public class Table extends HttpServlet {
             throws ServletException, IOException {
         String id = request.getParameter("id");
         String table = request.getParameter("name");
-        System.err.println(table + " " + id); 
-        if (id != null) {
-            detail(request, response, table, id);
-        } else {
+        String action = request.getParameter("action");
+        System.err.println(table + " " + id);
+        if (action.equals("edit")) {
+            edit(request,response, table, id);
+        } else if (action.equals("delete")) {
+            delete(request,response, table, id);
+        } else if (action.equals("new")) {
             create(request, response, table);
+        } else {
+            detail(request, response, table, id);
         }
 //        processRequest(request, response);
     }
@@ -74,9 +79,7 @@ public class Table extends HttpServlet {
             System.err.println("cols" + columns);
             RequestDispatcher rd = request.getRequestDispatcher("/faces/create.jsp");
             rd.forward(request, response);
-        } catch (ServletException ex) {
-            Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ServletException | IOException ex) {
             Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -86,8 +89,13 @@ public class Table extends HttpServlet {
             throws ServletException, IOException {
         AbstractDAO cnint = new AbstractDAO();
         String table = request.getParameter("tableName");
-        cnint.add(table,  request); 
-       
+        String id = request.getParameter("rowId");
+        if(id == null){
+            cnint.add(table, request);
+        }else {
+            cnint.edit(table, id, request);
+        }
+
 //        RequestDispatcher rd = request.getRequestDispatcher("Main?table=" + table);
 //        rd.include(request, response);
         response.sendRedirect("Main?table=" + table);
@@ -98,5 +106,37 @@ public class Table extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void edit(HttpServletRequest request, HttpServletResponse response, String table, String id) {
+        try {
+            AbstractDAO cnint = new AbstractDAO();
+//            Map<String,String> columns = cnint.getTableSchema("admins");
+            Map<String, String> columns = cnint.getValues(table, id);
+            HttpSession hs = request.getSession();
+            hs.setAttribute("columns", columns);
+            hs.setAttribute("tableName", table);
+            hs.setAttribute("rowId", id);
+            System.err.println("cols" + columns);
+            RequestDispatcher rd = request.getRequestDispatcher("/faces/edit.jsp");
+            rd.forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response, String table, String id) {
+        try {
+            AbstractDAO cnint = new AbstractDAO();
+            cnint.delete(table, id);
+            response.sendRedirect("Main?table=" + table);
+        } catch (IOException ex) {
+            try {
+                response.sendRedirect("Main");
+            } catch (IOException ex1) {
+                Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+
+              }
 
 }

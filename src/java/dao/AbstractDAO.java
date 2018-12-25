@@ -138,8 +138,8 @@ public class AbstractDAO {
             ResultSetMetaData md = rs.getMetaData();
             int colN = md.getColumnCount();
             for (int i = 1; i <= colN; i++) {
-                System.err.println( i +  " : " + md.getColumnName(i) );
-                columns.put(md.getColumnName(i), ""); 
+                System.err.println(i + " : " + md.getColumnName(i));
+                columns.put(md.getColumnName(i), "");
             }
 
 //        columns = getTableSchema(name);
@@ -163,20 +163,53 @@ public class AbstractDAO {
         ResultSet rs = stmt.executeQuery("SELECT * FROM " + name);
 
         while (rs.next()) {
-            rows.put(rs.getObject(1).toString(), rs.getObject(2).toString());
+            ResultSetMetaData md = rs.getMetaData();
+            int colN = md.getColumnCount();
+            String contenu = " ";
+            System.err.println("" + colN);
+            for (int i = 2; i <= colN; i++) {
+                Object o = rs.getObject(i);
+                if (o != null) {
+                    contenu += o.toString();
+                    if (i < colN) {
+                        contenu += " | ";
+                    }
+                }
+            }
+            rows.put(rs.getObject(1).toString(), contenu);
         }
         return rows;
     }
 
     public int add(String table, HttpServletRequest request) {
         try {
-            String sql = "INSERT INTO " + table + " " + Util.getParamsFromRequest(request) ;
+            String sql = "INSERT INTO " + table + " " + Util.getParamsFromRequest(request);
             Statement stmt = conn.createStatement();
-            return  stmt.executeUpdate(sql); 
+            return stmt.executeUpdate(sql);
         } catch (SQLException ex) {
             Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
 
+    public int delete(String table, String id) {
+        try {
+            Statement stmt = conn.createStatement();
+            return stmt.executeUpdate("DELETE FROM " + table + " WHERE id='" + id + "'");
+        } catch (SQLException ex) {
+            Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    } 
+
+    public int edit(String table, String id, HttpServletRequest request) {
+        try {
+            Statement stmt = conn.createStatement();
+            //System.err.println(">>" + "UPDATE  " + table + " " + " SET " + Util.getUpdateFromReqest(request) + " WHERE id='" + id + "'");
+            return stmt.executeUpdate("UPDATE  " + table + " " + " SET " + Util.getUpdateFromReqest(request) + " WHERE id='" + id + "'");
+        } catch (SQLException ex) {
+            Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
 }

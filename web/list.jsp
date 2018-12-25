@@ -14,37 +14,70 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <f:view>
-    <html>
+    <html> 
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <title>JSP Page</title>
+            <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
         </head>
-        <body>
-                <% String tableName = (String) session.getAttribute("tableName"); %>
-            <a href="table?name=<%= tableName %>" >Nouveau</a>
-            <table style="border: 1px solid black">
-                <thead>
-                <th>id</th>
-                <th>Contenu</th>
-                <th>Options</th>           
-            </thead> 
-            <tbody> 
-                <% Map<String, String> table = (HashMap<String,String>) session.getAttribute("table"); %>
-                <% for (Map.Entry<String, String> entry : table.entrySet()) {
-                    String id = entry.getKey();
-                    String contenu = entry.getValue();%>
-                <tr>
+        <body> 
 
-                    <td><%= id %></td>
-                    <td><%= contenu %></td>
-                    <td>
-                        <a href="table?name=<%= tableName %>&id=<%= id %>">Detail</a> 
-                    </td>
-                </tr>
-                <% } %>
+            <div class="container">
+                <!--Header-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand" href="#">Framework Demo</a>
+                 
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="Main">Liste des tables</a>
+                            </li>                        
+                        </ul>
+                    </div>
+                </nav>
+                <div class="row justify-content-center my-2">
+                    <div class="col-8">
+                        <!--Content-->
+                        <div class="card ">
+                            <div class="card-header">Compte</div>
+                            <div class="card-body">
+                                <% String tableName = (String) session.getAttribute("tableName"); %>
+                                <a class="btn btn-outline-primary mb-2" href="table?name=<%= tableName %>&action=new">Ajouter</a>
 
-            </tbody>
-        </table>
-           </body>
+                                <table  class="table table-bordered">
+                                    <thead>
+                                    <th>id</th>
+                                    <th>Contenu</th>
+                                    <th>Options</th>           
+                                    </thead> 
+                                    <tbody> 
+                                        <% Map<String, String> table = (HashMap<String,String>) session.getAttribute("table"); %>
+                                        <% for (Map.Entry<String, String> entry : table.entrySet()) {
+                                            String id = entry.getKey();
+                                            String contenu = entry.getValue();%>
+                                        <tr>
+
+                                            <td><%= id %></td>
+                                            <td><%= contenu %></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-outline-info" href="table?name=<%= tableName %>&action=detail&id=<%= id %>">Detail</a> 
+                                                    <a class="btn btn-outline-success" href="table?name=<%= tableName %>&action=edit&id=<%= id %>">Modifier</a> 
+                                                    <a class="btn btn-outline-danger" href="table?name=<%= tableName %>&action=delete&id=<%= id %>">Supprimer</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </body>
     </html>
 </f:view>

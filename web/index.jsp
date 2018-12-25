@@ -21,28 +21,54 @@
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <title>JSP Page</title>
+            <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
         </head>
         <body>
-   
-            <h1><h:outputText value="List des tables "/></h1>
-            <table style="border: 1px solid black">
-                <thead>
-                <th>Name</th>
-                <th>Action</th>           
-                </thead>
-                <tbody> 
-                    <% LinkedList<String> tables = (LinkedList<String>) session.getAttribute("tables"); %>
-                    <% for (Iterator<String> iterator = tables.iterator(); iterator.hasNext();) {
-                        String tableName = iterator.next(); %>
-                    <tr>
-               
-                        <td><%= tableName %></td>
-                        <td><a href="Main?table=<%= tableName %>">Access</a> </td>
-                    </tr> 
-                    <% } %>
 
-                </tbody>
-            </table>
+
+            <div class="container">
+                <!--Header-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand" href="#">Framework Demo</a>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="Main">Liste des tables</a>
+                            </li>                        
+                        </ul>
+                    </div>
+                </nav>
+                <div class="row justify-content-center my-2">
+                    <div class="col-8">
+                        <!--Content-->
+                        <div class="card ">
+                            <div class="card-header">Liste des tables</div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <th>Name</th>
+                                    <th>Action</th>           
+                                    </thead>
+                                    <tbody> 
+                                        <% LinkedList<String> tables = (LinkedList<String>) session.getAttribute("tables"); %>
+                                        <% for (Iterator<String> iterator = tables.iterator(); iterator.hasNext();) {
+                                            String tableName = iterator.next(); %>
+                                        <tr>
+
+                                            <td><%= tableName %></td>
+                                            <td><a class="btn btn-outline-primary " style="width: 100%" href="Main?table=<%= tableName %>">Access</a> </td>
+                                        </tr> 
+                                        <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </body>
     </html>
 </f:view>

@@ -24,29 +24,60 @@
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <title>JSP Page</title>
+            <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
         </head>
         <body> 
-            <h1><h:outputText value="Hello World!"/></h1>
-            <form method="post" action="table?tableName=<%= session.getAttribute("tableName") %>">
-                
-                <% Map<String, String> columns = (Map<String, String>) session.getAttribute("columns"); %>
-                <% for (Map.Entry<String, String> entry : columns.entrySet()) {
-                    String name = entry.getKey();
-                    String type = entry.getValue();%>
-                <label for="<%= name %>"><%= name %></label>
-                <% if(type.toLowerCase().equals("int")) { %>
-                <input name="<%= name %>" type="number"  id="<%= name %>" />
-                <% }else if(type.toLowerCase().equals("text")) {%>
-                <textarea name="<%= name %>" id="<%= name %>"></textarea>
-                <% }else {%>
-                <input name="<%= name %>" type="text"  id="<%= name %>" />
-                <% } %>
+            
+                <div class="container">
+                    <!--Header-->
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <a class="navbar-brand" href="#">Framework Demo</a>
 
-                <br>
-                <% }%>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="Main">Liste des tables</a>
+                                </li>                        
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="row justify-content-center my-2">
+                        <div class="col-8">
+                            <!--Content-->
+                            <% String tableName = (String) session.getAttribute("tableName"); %>
+                            <div class="card ">
+                                
+                                <div class="card-header"><%= tableName %></div>
+                                <div class="card-body">
+                                    
+                                    <form method="post" action="table?tableName=<%= tableName %>">
 
-                <input type="submit" />
-            </form>
+                                        <% Map<String, String> columns = (Map<String, String>) session.getAttribute("columns"); %>
+                                        <% for (Map.Entry<String, String> entry : columns.entrySet()) {
+                                            String name = entry.getKey();
+                                            String type = entry.getValue();%>
+                                            <div class="form-group row">
+                                                <label for="<%= name %>" class="col-sm-3 col-form-label"><%= name %></label>
+                                        <% if(type.toLowerCase().equals("int")) { %>
+                                        <input name="<%= name %>" class="form-control col-sm-9" type="number"  id="<%= name %>" />
+                                        <% }else if(type.toLowerCase().equals("text")) {%>
+                                        <textarea name="<%= name %>" class="form-control col-sm-9" id="<%= name %>"></textarea>
+                                        <% }else {%>
+                                        <input name="<%= name %>"  class="form-control col-sm-9" type="text"  id="<%= name %>" />
+                                        <% } %>
+                                            </div>
+                                        
+                                        <% }%>
+
+                                        <input type="submit" class="btn btn-primary mt-2" value="Sauvegarder">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         </body>
     </html>
 </f:view>
