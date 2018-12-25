@@ -28,15 +28,14 @@ import util.Util;
  */
 public class AbstractDAO {
 
+    String DB_NAME = "test";
     Connection conn;
 
     public AbstractDAO() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DB_NAME, "root", "");
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -45,18 +44,18 @@ public class AbstractDAO {
         try {
             LinkedList<String> tables = new LinkedList<>();
             DatabaseMetaData md = conn.getMetaData();
-            ResultSet rs = md.getTables(null, null, "%", null);
-            while (rs.next()) {
-                tables.add(rs.getString(3));
+                ResultSet rs = md.getTables(null, null, "%", null);
+                while (rs.next()) {
+                    tables.add(rs.getString(3));
+                }
+                return tables;
+            } catch (SQLException ex) {
+                Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return tables;
-        } catch (SQLException ex) {
-            Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
-    }
 
-    public LinkedList<Entity> findAll(Class<?> entity) throws IntrospectionException {
+        public LinkedList<Entity> findAll(Class<?> entity) throws IntrospectionException {
         try {
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * from " + entity.getSimpleName());
@@ -185,6 +184,7 @@ public class AbstractDAO {
         try {
             String sql = "INSERT INTO " + table + " " + Util.getParamsFromRequest(request);
             Statement stmt = conn.createStatement();
+            System.err.println(sql);
             return stmt.executeUpdate(sql);
         } catch (SQLException ex) {
             Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,8 +205,9 @@ public class AbstractDAO {
     public int edit(String table, String id, HttpServletRequest request) {
         try {
             Statement stmt = conn.createStatement();
-            //System.err.println(">>" + "UPDATE  " + table + " " + " SET " + Util.getUpdateFromReqest(request) + " WHERE id='" + id + "'");
-            return stmt.executeUpdate("UPDATE  " + table + " " + " SET " + Util.getUpdateFromReqest(request) + " WHERE id='" + id + "'");
+            String query = "UPDATE  " + table + " " + " SET " + Util.getUpdateFromReqest(request) + " WHERE id='" + id + "'";
+            System.err.println(query);
+            return stmt.executeUpdate(query);
         } catch (SQLException ex) {
             Logger.getLogger(AbstractDAO.class.getName()).log(Level.SEVERE, null, ex);
         }

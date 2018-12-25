@@ -27,6 +27,12 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "Main", urlPatterns = {"/Main"})
 public class Main extends HttpServlet {
 
+    public Main() {
+    }
+    
+    
+    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
